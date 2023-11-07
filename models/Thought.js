@@ -1,6 +1,6 @@
 // Import the Schema, model, and Types classes from Mongoose.
 const { Schema, model, Types } = require('mongoose');
-
+const moment = require('moment')
 
 // Define a new Schema for reactions.
 const reactionSchema = new Schema({
@@ -27,8 +27,17 @@ const reactionSchema = new Schema({
   createdAt: {
     type: Date,
     default: Date.now,
+    get: createdAtVal => moment(createdAtVal).format("MMM DD, YYYY [at] hh:mm a"),
   },
-});
+},
+{
+  toJSON: {
+      virtuals: true,
+      getters: true
+  },
+  id: false,
+}
+);
 
 // Define a new Schema for thoughts.
 const thoughtSchema = new Schema({
@@ -44,6 +53,7 @@ const thoughtSchema = new Schema({
   createdAt: {
     type: Date,
     default: Date.now,
+    get: createdAtVal => moment(createdAtVal).format("MMM DD, YYYY [at] hh:mm a"),
   },
 
   // The username field is a required string that identifies the user who posted the thought.
@@ -54,6 +64,13 @@ const thoughtSchema = new Schema({
 
   // The reactions field is an array of Reaction documents.
   reactions: [reactionSchema],
+},
+{
+  toJSON: {
+      virtuals: true,
+      getters: true
+  },
+  id: false,
 });
 
 // Define a virtual field called reactionCount that returns the number of reactions the thought has.
